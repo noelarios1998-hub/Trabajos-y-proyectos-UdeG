@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación - Seguridad y Bases de Datos</title>
+    <!-- Fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Iconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS para el diseño rápido y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        cdpr: '#ff003c', // Rojo estilo Cyberpunk/CDPR
+                        dark: '#0a0a0a',
+                        darker: '#050505',
+                        light: '#f3f4f6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos personalizados para la estructura de diapositivas fijas (1280x720) */
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            color: #f3f4f6;
+        }
+
+        .presentation-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            padding: 50px 0;
+            width: 100%;
+        }
+
+        .slide-container {
+            width: 1280px;
+            max-width: 95vw;
+            height: 720px;
+            background-color: #0a0a0a;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        /* Fondos y decoraciones */
+        .bg-grid {
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .glitch-text {
+            position: relative;
+            color: white;
+        }
+        
+        /* Animaciones simples */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .slide-container.active .fade-in-up {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.2s; }
+        .delay-2 { transition-delay: 0.4s; }
+        .delay-3 { transition-delay: 0.6s; }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: rgba(255,255,255,0.5);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+
+        /* Tarjetas de contenido */
+        .glass-card {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ff003c;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .glass-card-blue {
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* --- NUEVOS ESTILOS PARA LA PORTADA DINÁMICA --- */
+        .float-db {
+            animation: float-db 6s ease-in-out infinite;
+        }
+        .float-db-reverse {
+            animation: float-db 8s ease-in-out infinite reverse;
+        }
+        @keyframes float-db {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        .typing-effect {
+            border-right: 3px solid #ff003c;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 2.5s steps(30, end), blink-caret .75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #ff003c; }
+        }
+
+        .sql-code {
+            color: #10b981;
+            font-family: monospace;
+            opacity: 0.8;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pulse {
+            animation: status-pulse 2s infinite;
+        }
+        @keyframes status-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Ocultar barra de scroll */
+        .presentation-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .presentation-container::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        .presentation-container::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="presentation-wrapper" id="container">
+
+        <!-- DIAPOSITIVA 1: PORTADA -->
+        <section class="slide-container bg-grid" id="slide1">
+            <!-- Decoraciones flotantes temáticas de Base de Datos -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center">
+                <i class="fas fa-database float-db text-gray-800 opacity-20 absolute top-10 left-10" style="font-size: 14rem;"></i>
+                <i class="fas fa-server float-db-reverse text-gray-800 opacity-20 absolute bottom-20 right-10" style="font-size: 16rem;"></i>
+                <i class="fas fa-network-wired float-db text-gray-800 opacity-10 absolute top-1/4 right-1/4" style="font-size: 8rem; animation-delay: 1s;"></i>
+                <i class="fas fa-microchip float-db text-gray-800 opacity-10 absolute bottom-1/4 left-1/4" style="font-size: 10rem; animation-delay: 2s;"></i>
+            </div>
+
+            <div class="max-w-4xl w-full text-center fade-in-up z-10">
+                <div class="flex items-center justify-center mb-6">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Escudo_UdeG.svg" alt="UdeG Logo" class="h-20 mr-4 opacity-90" onerror="this.style.display='none'">
+                    <div class="text-left">
+                        <h2 class="text-xl md:text-2xl font-heading font-bold text-gray-300 tracking-widest uppercase">Universidad de Guadalajara</h2>
+                        <h3 class="text-lg md:text-xl font-heading text-cdpr">Centro Universitario de Guadalajara</h3>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta estilo Terminal SQL -->
+                <div class="glass-card rounded-xl text-left mx-auto my-6 transform transition hover:scale-[1.02] duration-300 overflow-hidden shadow-[0_0_30px_rgba(255,0,60,0.15)] bg-opacity-90 bg-gray-900 border-gray-700">
+                    
+                    <!-- Top bar de la terminal -->
+                    <div class="bg-black px-4 py-3 flex items-center border-b border-gray-800">
+                        <div class="flex space-x-2 mr-4">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="text-xs font-mono text-gray-500 flex-1"><i class="fas fa-lock mr-2"></i>root@udg-db-cluster:~</span>
+                        <div class="flex items-center text-xs font-bold text-green-400 bg-green-900 bg-opacity-30 px-2 py-1 rounded-full border border-green-800">
+                            <div class="w-2 h-2 rounded-full bg-green-500 mr-2 status-pulse"></div> Conectado
+                        </div>
+                    </div>
+
+                    <div class="p-8 md:p-10">
+                        <!-- Comando SQL Simulado -->
+                        <div class="sql-code text-sm md:text-base mb-4 font-bold">
+                            <span class="text-blue-400">SELECT</span> titulo, tema <span class="text-blue-400">FROM</span> presentacion <br class="md:hidden">
+                            <span class="text-blue-400">WHERE</span> materia = <span class="text-yellow-300">'Bases de Datos'</span>;
+                        </div>
+
+                        <h1 class="text-2xl md:text-4xl font-heading font-black mb-6 text-white leading-tight">
+                            <span class="text-gray-400 text-lg md:text-xl block mb-2">> Resultados:</span>
+                            <div class="w-full overflow-hidden">
+                                <span class="typing-effect block text-transparent bg-clip-text bg-gradient-to-r from-cdpr to-orange-500 w-max pb-1">Casos: Ransomware & Vulnerabilidades</span>
+                            </div>
+                        </h1>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 border-t border-gray-800 pt-8 border-dashed">
+                            <div>
+                                <p class="text-gray-400 text-sm uppercase tracking-wider mb-2 font-bold"><i class="fas fa-users-cog mr-2 text-cdpr"></i>DBA's / Integrantes:</p>
+                                <ul class="text-gray-300 space-y-2 font-mono text-sm">
+                                    <li class="hover:text-white transition cursor-default">>> Linares Castillo Carlos Alberto</li>
+                                    <li class="hover:text-white transition cursor-default">>> Larios Lopez Noe Oswaldo</li>
+                                    <li class="hover:text-white transition cursor-default">>> Heerea Valdez Christian Omar</li>
+                                    <li class="hover:text-white transition cursor-default">>> Lopez Orozco Angel Emiliano <span class="text-gray-500 italic text-xs">/* El tralalero */</span></li>
+                                </ul>
+                            </div>
+                            <div class="space-y-6">
+                                <div>
+                                    <p class="text-gray-400 text-sm uppercase tracking-wider mb-1 font-bold"><i class="fas fa-user-shield mr-2 text-blue-400"></i>SysAdmin / Maestra:</p>
+                                    <p class="text-gray-200 font-mono text-sm">> Nicole Michelle Leyva Munguia</p>
+                                </div>
+                                <div class="flex justify-between items-end border-b border-gray-800 pb-2">
+                                    <div>
+                                        <p class="text-gray-400 text-sm uppercase tracking-wider mb-1 font-bold"><i class="fas fa-server mr-2 text-yellow-500"></i>Materia:</p>
+                                        <p class="text-gray-200 font-bold">Bases de Datos</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-gray-500 text-xs font-mono">TIMESTAMP</p>
+                                        <p class="text-cdpr font-bold font-mono">18-03-2026</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#slide2" class="scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+        </section>
+
+        <!-- DIAPOSITIVA 2: EL CASO CD PROJEKT RED -->
+        <section class="slide-container bg-grid" id="slide2">
+            <div class="max-w-6xl w-full fade-in-up">
+                <div class="flex items-center mb-8">
+                    <div class="h-12 w-2 bg-cdpr mr-4"></div>
+                    <h2 class="text-4xl md:text-5xl font-heading font-black">Caso: CD Projekt Red (2021)</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-card p-8 rounded-xl fade-in-up delay-1">
+                        <i class="fas fa-biohazard text-4xl text-cdpr mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-3">El Ataque</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            En febrero de 2021, los creadores de <em>The Witcher 3</em> y <em>Cyberpunk 2077</em> sufrieron un ciberataque masivo por el grupo <strong>HelloKitty</strong>. Los atacantes cifraron servidores y robaron el código fuente de sus juegos más importantes, además de documentos financieros y de RRHH.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-xl fade-in-up delay-2">
+                        <i class="fas fa-search text-4xl text-yellow-500 mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-3">Causa del Problema</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Aunque CDPR no reveló el vector exacto, expertos en seguridad concluyeron que fue un ataque dirigido a través de <strong>dispositivos de acceso remoto comprometidos</strong> (probablemente por el trabajo en casa durante la pandemia) o <strong>phishing</strong>. Faltó segmentación de red para evitar el movimiento lateral del malware.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-xl fade-in-up delay-3">
+                        <i class="fas fa-shield-virus text-4xl text-green-500 mb-4"></i>
+                        <h3 class="text-2xl font-bold mb-3">¿Cómo se solucionó?</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            CDPR tomó la decisión correcta: <strong>se negaron a pagar el rescate</strong>. 
+                            <br><br>
+                            Aislaron la red, contactaron a las autoridades (incluyendo Interpol) y <strong>restauraron los sistemas utilizando copias de seguridad offline</strong> (backups inmutables) que los atacantes no lograron alcanzar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <a href="#slide3" class="scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+        </section>
+
+        <!-- DIAPOSITIVA 3: ATAQUE A BASES DE DATOS (NOTICIA) -->
+        <section class="slide-container bg-grid" id="slide3">
+            <div class="max-w-6xl w-full fade-in-up">
+                <div class="flex items-center mb-8">
+                    <div class="h-12 w-2 bg-blue-500 mr-4"></div>
+                    <h2 class="text-4xl md:text-5xl font-heading font-black">Noticia: Vulnerabilidad en BD</h2>
+                </div>
+
+                <div class="glass-card glass-card-blue p-8 md:p-10 rounded-xl mb-8">
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="md:w-1/3">
+                            <div class="bg-gray-900 border border-gray-700 p-6 rounded-lg text-center">
+                                <i class="fas fa-newspaper text-6xl text-blue-500 mb-4"></i>
+                                <h4 class="text-xl font-bold text-white mb-2">Caso MOVEit Transfer</h4>
+                                <span class="bg-red-900 text-red-200 text-xs font-bold px-3 py-1 rounded-full">Mayo 2023</span>
+                                <p class="text-gray-400 text-sm mt-4">Afectó a miles de organizaciones globales (BBC, British Airways, etc.)</p>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h3 class="text-3xl font-heading font-bold text-white mb-4">El Robo Masivo de Datos a través de Inyección SQL</h3>
+                            <p class="text-gray-300 text-lg leading-relaxed mb-4">
+                                Se descubrió una vulnerabilidad crítica de día cero (Zero-Day) catalogada como <strong>CVE-2023-34362</strong> en el software de transferencia de archivos corporativos <em>MOVEit</em>. El grupo de ransomware CL0P explotó esto para robar datos de cientos de bases de datos empresariales en todo el mundo.
+                            </p>
+                            <a href="#" class="inline-block text-blue-400 hover:text-blue-300 transition border-b border-blue-400 pb-1">Artículo de referencia: The Hacker News - MOVEit Zero-Day Exploitation</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#slide4" class="scroll-indicator"><i class="fas fa-chevron-down"></i></a>
+        </section>
+
+        <!-- DIAPOSITIVA 4: CAUSAS Y SOLUCIONES DE LA BD -->
+        <section class="slide-container bg-grid" id="slide4">
+            <div class="max-w-6xl w-full fade-in-up">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    
+                    <!-- Causa -->
+                    <div class="glass-card p-8 rounded-xl relative overflow-hidden group" style="border-left-color: #ef4444;">
+                        <!-- Icono de fondo marca de agua -->
+                        <i class="fas fa-spider absolute -bottom-10 -right-4 text-[150px] text-red-500 opacity-5 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"></i>
+                        
+                        <div class="flex items-center mb-6 relative z-10">
+                            <div class="bg-red-500 bg-opacity-20 p-3 rounded-lg mr-4 border border-red-500 border-opacity-30">
+                                <i class="fas fa-bug text-3xl text-red-500"></i>
+                            </div>
+                            <h3 class="text-3xl font-heading font-bold text-white">Anatomía del Ataque</h3>
+                        </div>
+                        
+                        <div class="space-y-5 text-gray-300 relative z-10">
+                            <p class="text-base leading-relaxed">
+                                El núcleo del desastre fue una <span class="text-red-400 font-bold border-b border-red-400 border-dashed pb-0.5">Inyección SQL (SQLi) crítica</span> en la interfaz web de MOVEit. La aplicación recibía parámetros HTTP sin validación.
+                            </p>
+                            
+                            <!-- Snippet de código estilo IDE -->
+                            <div class="bg-[#0d1117] rounded-lg border border-gray-700 shadow-lg overflow-hidden font-mono text-sm transform transition hover:scale-[1.01]">
+                                <div class="bg-gray-800 px-4 py-2 flex items-center justify-between border-b border-gray-700">
+                                    <div class="flex space-x-2">
+                                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    </div>
+                                    <span class="text-gray-400 text-xs font-bold">auth_controller.js</span>
+                                </div>
+                                <div class="p-4">
+                                    <p class="text-gray-500 mb-1">/* Vulnerabilidad de día cero (Zero-Day) */</p>
+                                    <p><span class="text-purple-400">const</span> <span class="text-blue-300">query</span> = <span class="text-yellow-300">"SELECT * FROM accounts WHERE session = '"</span> <span class="text-red-400 font-bold">+ userInput +</span> <span class="text-yellow-300">"';"</span>;</p>
+                                    <p class="text-gray-500 mt-2">/* El atacante inyecta en userInput: ' OR '1'='1 */</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-red-900 bg-opacity-20 border-l-4 border-red-500 p-4 rounded-r-lg shadow-inner">
+                                <p class="text-sm text-gray-200">
+                                    <strong class="text-red-400"><i class="fas fa-exclamation-triangle mr-1"></i> Impacto:</strong> Evasión total de la autenticación. Los atacantes pudieron leer tablas completas, ejecutar comandos remotos y exfiltrar terabytes de datos de clientes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Plan de Seguridad -->
+                    <div class="glass-card p-8 rounded-xl relative overflow-hidden group" style="border-left-color: #10b981;">
+                        <!-- Icono de fondo marca de agua -->
+                        <i class="fas fa-shield-alt absolute -bottom-10 -right-4 text-[150px] text-green-500 opacity-5 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"></i>
+
+                        <div class="flex items-center mb-6 relative z-10">
+                            <div class="bg-green-500 bg-opacity-20 p-3 rounded-lg mr-4 border border-green-500 border-opacity-30">
+                                <i class="fas fa-clipboard-check text-3xl text-green-500"></i>
+                            </div>
+                            <h3 class="text-3xl font-heading font-bold text-white">Plan de Prevención</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                            <!-- Medida 1 -->
+                            <div class="bg-black bg-opacity-50 border border-gray-700 hover:border-green-500 p-4 rounded-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:-translate-y-1 cursor-default">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-code text-green-400 mr-2 text-lg"></i>
+                                    <h4 class="text-white font-bold text-sm uppercase tracking-wide">Consultas Parametrizadas</h4>
+                                </div>
+                                <p class="text-gray-400 text-xs leading-relaxed">Uso estricto de <em>Prepared Statements</em> o un ORM seguro. Aísla el código SQL de los datos ingresados por el usuario, neutralizando la inyección.</p>
+                            </div>
+                            
+                            <!-- Medida 2 -->
+                            <div class="bg-black bg-opacity-50 border border-gray-700 hover:border-green-500 p-4 rounded-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:-translate-y-1 cursor-default">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-user-lock text-green-400 mr-2 text-lg"></i>
+                                    <h4 class="text-white font-bold text-sm uppercase tracking-wide">Menor Privilegio</h4>
+                                </div>
+                                <p class="text-gray-400 text-xs leading-relaxed">El usuario de la aplicación no debe ser <code class="bg-gray-800 px-1 rounded text-red-300 font-mono">sa</code> o <code class="bg-gray-800 px-1 rounded text-red-300 font-mono">root</code>. Restringir permisos de escritura/lectura solo a las tablas necesarias.</p>
+                            </div>
+
+                            <!-- Medida 3 -->
+                            <div class="bg-black bg-opacity-50 border border-gray-700 hover:border-green-500 p-4 rounded-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:-translate-y-1 cursor-default">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-network-wired text-green-400 mr-2 text-lg"></i>
+                                    <h4 class="text-white font-bold text-sm uppercase tracking-wide">Firewall WAF</h4>
+                                </div>
+                                <p class="text-gray-400 text-xs leading-relaxed">Desplegar un Web Application Firewall para analizar el tráfico HTTP en tiempo real y bloquear firmas conocidas de ataques SQLi (ej. <code>UNION SELECT</code>).</p>
+                            </div>
+
+                            <!-- Medida 4 -->
+                            <div class="bg-black bg-opacity-50 border border-gray-700 hover:border-green-500 p-4 rounded-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:-translate-y-1 cursor-default">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-search-shield text-green-400 mr-2 text-lg"></i>
+                                    <h4 class="text-white font-bold text-sm uppercase tracking-wide">Auditorías SAST/DAST</h4>
+                                </div>
+                                <p class="text-gray-400 text-xs leading-relaxed">Pruebas automatizadas de seguridad en el código (SAST) y pruebas dinámicas en el entorno de pruebas (DAST) para detectar brechas previas al despliegue.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="absolute bottom-8 left-0 w-full text-center text-gray-600 text-sm">
+                Fin de la presentación. <a href="#slide1" class="text-cdpr hover:underline ml-2 transition-colors font-bold">Volver al inicio <i class="fas fa-arrow-up"></i></a>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Lógica simple para activar animaciones cuando el slide es visible
+        const container = document.getElementById('container');
+        const slides = document.querySelectorAll('.slide-container');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    // Opcional: remover clase si quieres que se anime cada vez que haces scroll
+                    // entry.target.classList.remove('active'); 
+                }
+            });
+        }, {
+            threshold: 0.5 // Se activa cuando el 50% del slide es visible
+        });
+
+        slides.forEach(slide => {
+            observer.observe(slide);
+        });
+
+        // Asegurar que el primer slide tenga la animación al cargar
+        setTimeout(() => {
+            document.getElementById('slide1').classList.add('active');
+        }, 100);
+    </script>
+</body>
+</html>
